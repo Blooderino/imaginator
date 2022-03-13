@@ -20,6 +20,7 @@ namespace imaginator
         std::vector<byte> sourceData(file.tellg());
         file.seekg(0, file.beg);
         file.read(reinterpret_cast<char*>(sourceData.data()), sourceData.size());
+        file.close();
 
         return inputData(sourceData);
     }
