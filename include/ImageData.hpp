@@ -2,6 +2,8 @@
 #define IMAGINATOR_IMAGEDATA_HPP
 
 #include <vector>
+#include <limits>
+#include <memory>
 
 #include "ImagePixel.hpp"
 
@@ -11,41 +13,53 @@ namespace imaginator
     {
     public:
 
-        ImageData(size_t width = 0, size_t height = 0);
+        enum : size_t
+        {
+            MIN_WIDTH = std::numeric_limits<size_t>::min(),
+            MAX_WIDTH = std::numeric_limits<size_t>::max(),
+            MIN_HEIGHT = std::numeric_limits<size_t>::min(),
+            MAX_HEIGHT = std::numeric_limits<size_t>::max()
+        };
+
+        ImageData(
+            size_t width = ImageData::MIN_WIDTH, 
+            size_t height = ImageData::MIN_HEIGHT);
 
         virtual ~ImageData();
 
-        ImagePixel& operator()(size_t x, size_t y);
+        inline ImagePixel& operator()(size_t x, size_t y);
 
-        const ImagePixel& operator()(size_t x, size_t y) const;
+        inline const ImagePixel& operator()(size_t x, size_t y) const;
 
-        void putPixel(size_t x, size_t y, const ImagePixel& imagePixel);
+        inline void setPixel(size_t x, size_t y, const ImagePixel& imagePixel);
 
-        ImagePixel& getPixel(size_t x, size_t y);
+        inline ImagePixel& getPixel(size_t x, size_t y);
 
-        const ImagePixel& getPixel(size_t x, size_t y) const;
+        inline const ImagePixel& getPixel(size_t x, size_t y) const;
 
-        void setWidth(size_t width);
+        inline void setWidth(size_t width);
 
-        size_t getWidth() const;
+        inline size_t getWidth() const;
 
-        void setHeight(size_t height);
+        inline void setHeight(size_t height);
 
-        size_t getHeight() const;
+        inline size_t getHeight() const;
 
-        void clear();
+        inline void clear();
+
+        void reset();
 
     private:
 
-        std::vector<std::vector<ImagePixel>> m_pixels;
+        std::vector<std::vector<ImagePixel>> pixels;
 
-        size_t m_width;
+        size_t width;
 
-        size_t m_height;
+        size_t height;
 
-        void throwIncorrectArgumentException() const;
+        void throwIncorrectArgumentException(size_t width, size_t height) const;
 
-        void throwOutOfBoundsException(size_t x, size_t y) const;
+        void throwOutOfBoundsException(size_t x, size_t y, size_t width, size_t height) const;
     };
 }
 

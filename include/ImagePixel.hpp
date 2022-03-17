@@ -12,37 +12,47 @@ namespace imaginator
     {
     public:
 
-        ImagePixel(byte red = 0, byte green = 0, byte blue = 0, std::optional<byte> alpha = std::nullopt);
+        enum : byte
+        {
+            MIN_CHANNEL_VALUE = std::numeric_limits<byte>::min(),
+            MAX_CHANNEL_VALUE = std::numeric_limits<byte>::max()
+        };
+
+        ImagePixel(
+            byte red = MAX_CHANNEL_VALUE, 
+            byte green = MAX_CHANNEL_VALUE, 
+            byte blue = MAX_CHANNEL_VALUE, 
+            std::optional<byte> alpha = std::nullopt);
 
         ImagePixel(const ImagePixel& imagePixel);
 
         virtual ~ImagePixel();
 
-        void setRed(byte red);
+        inline void setRed(byte red);
 
-        byte getRed() const;
+        inline byte getRed() const;
 
-        void setGreen(byte green);
+        inline void setGreen(byte green);
 
-        byte getGreen() const;
+        inline byte getGreen() const;
 
-        void setBlue(byte blue);
+        inline void setBlue(byte blue);
 
-        byte getBlue() const;
+        inline byte getBlue() const;
 
-        void setAlpha(std::optional<byte> alpha);
+        inline void setAlpha(std::optional<byte> alpha);
 
-        std::optional<byte> getAlpha() const;
+        inline std::optional<byte> getAlpha() const;
 
     private:
 
-        byte m_red;
+        byte red;
 
-        byte m_green;
+        byte green;
 
-        byte m_blue;
+        byte blue;
 
-        std::optional<byte> m_alpha;
+        std::optional<byte> alpha;
     };
 }
 
