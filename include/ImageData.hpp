@@ -37,11 +37,11 @@ namespace imaginator
 
         inline const ImagePixel& getPixel(size_t x, size_t y) const;
 
-        inline void setWidth(size_t width);
+        void setWidth(size_t width);
 
         inline size_t getWidth() const;
 
-        inline void setHeight(size_t height);
+        void setHeight(size_t height);
 
         inline size_t getHeight() const;
 
@@ -57,9 +57,9 @@ namespace imaginator
 
         size_t height;
 
-        void throwIncorrectArgumentException(size_t width, size_t height) const;
+        void throwIncorrectArgumentException() const;
 
-        void throwOutOfBoundsException(size_t x, size_t y, size_t width, size_t height) const;
+        void throwOutOfBoundsException(size_t x, size_t y) const;
     };
 }
 
