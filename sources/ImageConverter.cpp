@@ -4,15 +4,16 @@
 
 namespace imaginator
 {
-    ImageConverter::ImageConverter() :
-        m_sourcePath("")
-    {}
+    ImageConverter::ImageConverter()
+    {
+        this->sourcePath = "";
+    }
 
     ImageConverter::~ImageConverter() {}
 
     const ImageData& ImageConverter::readData(const std::string& sourcePath)
     {
-        m_sourcePath = sourcePath;
+        this->sourcePath = sourcePath;
 
         std::ifstream file;
         file.open(sourcePath, std::ios::binary);
@@ -22,12 +23,12 @@ namespace imaginator
         file.read(reinterpret_cast<char*>(sourceData.data()), sourceData.size());
         file.close();
 
-        return inputData(sourceData);
+        return this->inputData(sourceData);
     }
 
     void ImageConverter::writeData(const std::string& destinationPath, const ImageData& editedData)
     {
-        std::vector<byte> destinationData = outputData(editedData);
+        std::vector<byte> destinationData = this->outputData(editedData);
         std::ofstream file;
         file.open(destinationPath, std::ios::binary);
         file.write(reinterpret_cast<char*>(destinationData.data()), destinationData.size());
@@ -36,6 +37,6 @@ namespace imaginator
 
     const std::string& ImageConverter::getSourcePath() const
     {
-        return m_sourcePath;
+        return this->sourcePath;
     }
 }

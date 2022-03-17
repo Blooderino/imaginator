@@ -8,15 +8,21 @@ namespace imaginator
 
     BmpConverter::~BmpConverter() {}
 
-    const ImageData& BmpConverter::inputData(const std::vector<byte> &sourceData)
+    const BmpData& BmpConverter::convertData(const ImageData& imageData)
     {
-        ImageData convertedData;
+        BmpData bmpData = static_cast<const BmpData&>(imageData);
+        return bmpData;
+    }
 
+    const BmpData& BmpConverter::inputData(const std::vector<byte>& sourceData)
+    {
+        BmpData convertedData;
         return convertedData;
     }
 
-    const std::vector<byte>& BmpConverter::outputData(const ImageData &editedData)
+    const std::vector<byte>& BmpConverter::outputData(const ImageData& editedData)
     {
+        const BmpData& bmpData = BmpConverter::convertData(editedData);
         std::vector<byte> destinationData;
 
         return destinationData;

@@ -2,6 +2,7 @@
 #define IMAGINATOR_BMPCONVERTER_HPP
 
 #include "ImageConverter.hpp"
+#include "BmpData.hpp"
 
 namespace imaginator
 {
@@ -13,9 +14,11 @@ namespace imaginator
 
         virtual ~BmpConverter();
 
+        static const BmpData& convertData(const ImageData& imageData);
+
     protected:
 
-        virtual const ImageData& inputData(const std::vector<byte>& sourceData) override;
+        virtual const BmpData& inputData(const std::vector<byte>& sourceData) override;
 
         virtual const std::vector<byte>& outputData(const ImageData& editedData) override;
 
