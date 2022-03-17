@@ -1,110 +1,134 @@
-#include "ImageData.hpp"
-
 #include <stdexcept>
 #include <string>
+#include <iostream>
+
+#include "ImageData.hpp"
 
 namespace imaginator
 {
-    ImageData::ImageData(size_t width, size_t height) :
-        m_width(width),
-        m_height(height),
-        m_pixels(std::vector<std::vector<ImagePixel>>(m_width))
+    ImageData::ImageData(
+        size_t width /* = ImageData::MIN_WIDTH */, 
+        size_t height /* = ImageData::MIN_HEIGHT */) 
     {
-        throwIncorrectArgumentException();
+        throwIncorrectArgumentException(width, height);
 
-        if (m_width > 0)
-            for (size_t i = 0; i < m_width; i++)
-                m_pixels[i] = std::vector<ImagePixel>(m_height);
+        this->width = width;
+        this->height = height;
+        this->pixels.resize(width);
+        this->pixels.shrink_to_fit();
+
+        if (width > 0)
+            for (size_t i = 0; i < this->getWidth(); i++)
+            {
+                this->pixels[i] = std::vector<ImagePixel>(this->getHeight());
+                this->pixels[i].shrink_to_fit();
+            }
     }
 
     ImageData::~ImageData() 
     {
-        clear();
+        this->clear();
     }
 
     ImagePixel& ImageData::operator()(size_t x, size_t y)
     {
-        return getPixel(x, y);
+        return this->getPixel(x, y);
     }
 
     const ImagePixel& ImageData::operator()(size_t x, size_t y) const
     {
-        return getPixel(x, y);
+        return this->getPixel(x, y);
     }
 
-    void ImageData::putPixel(size_t x, size_t y, const ImagePixel& imagePixel)
+    void ImageData::setPixel(size_t x, size_t y, const ImagePixel& imagePixel)
     {
-        throwOutOfBoundsException(x, y);
-        m_pixels[x][y] = imagePixel;
+        this->throwOutOfBoundsException(x, y, this->getWidth(), this->getHeight());
+        this->pixels[x][y] = imagePixel;
     }
 
     ImagePixel& ImageData::getPixel(size_t x, size_t y)
     {
-        throwOutOfBoundsException(x, y);
+        this->throwOutOfBoundsException(x, y, this->getWidth(), this->getHeight());
 
-        return m_pixels[x][y];
+        return this->pixels[x][y];
     }
 
     const ImagePixel& ImageData::getPixel(size_t x, size_t y) const
     {
-        throwOutOfBoundsException(x, y);
+        this->throwOutOfBoundsException(x, y, this->getWidth(), this->getHeight());
 
-        return m_pixels[x][y];
+        return this->pixels[x][y];
     }
 
     void ImageData::setWidth(size_t width)
     {
-        if (width > m_width)
-            for (size_t i = 0, count = width - m_width; i < count; i++)
-                m_pixels.push_back(std::vector<ImagePixel>(m_height));
-        else if (width < m_width)
-            for (size_t i = 0, count = m_width - width; i < count; i++)
-                m_pixels.pop_back();
+        if (width > this->getWidth())
+            for (size_t i = 0, count = width - this->getWidth(); i < count; i++)
+                this->pixels.push_back(std::vector<ImagePixel>(this->getWidth()));
+        else if (width < this->getWidth())
+            for (size_t i = 0, count = this->getWidth() - width; i < count; i++)
+                this->pixels.pop_back();
 
-        m_width = width;
+        this->width = width;
     }
 
     size_t ImageData::getWidth() const
     {
-        return m_width;
+        return this->width;
     }
 
     void ImageData::setHeight(size_t height)
     {
-        if (height > m_height)
-            for (size_t i = 0; i < m_width; i++)
-                for (size_t j = 0, count = height - m_height; j < count; j++)
-                    m_pixels[i].push_back(ImagePixel());
-        else if (height < m_height)
-            for (size_t i = 0; i < m_width; i++)
-                for (size_t j = 0, count = m_height - height; j < count; j++)
-                    m_pixels[i].pop_back();
+        if (height > this->getHeight())
+            for (size_t i = 0; i < this->getWidth(); i++)
+                for (size_t j = 0, count = height - this->getHeight(); j < count; j++)
+                    this->pixels[i].push_back(ImagePixel());
+        else if (height < this->getHeight())
+            for (size_t i = 0; i < this->getWidth(); i++)
+                for (size_t j = 0, count = this->getHeight() - height; j < count; j++)
+                    this->pixels[i].pop_back();
 
-        m_height = height;
+        this->height = height;
     }
 
     void ImageData::clear()
     {
-        m_pixels.clear();
+        this->pixels.clear();
+        this->width = ImageData::MIN_WIDTH;
+        this->height = ImageData::MAX_HEIGHT;
     }
 
-    void ImageData::throwIncorrectArgumentException() const
+    void ImageData::reset()
     {
-        if ((m_width == 0 && m_height > 0) || (m_height == 0 && m_width > 0))
+        for (size_t i = 0; i < this->getWidth(); i++)
+            for (size_t j = 0; j < this->getHeight(); j++)
+            {
+                this->pixels[i][j].setRed(ImagePixel::MAX_CHANNEL_VALUE);
+                this->pixels[i][j].setGreen(ImagePixel::MAX_CHANNEL_VALUE);
+                this->pixels[i][j].setBlue(ImagePixel::MAX_CHANNEL_VALUE);
+
+                if (this->pixels[i][j].getAlpha().has_value())
+                    this->pixels[i][j].setAlpha(ImagePixel::MAX_CHANNEL_VALUE);
+            }
+    }
+
+    void ImageData::throwIncorrectArgumentException(size_t width, size_t height) const
+    {
+        if ((width == 0 && height > 0) || (height == 0 && width > 0))
             throw std::invalid_argument(
                 std::string("[Error] imaginator::ImageData: incorrect argument(s): ") +
-                std::string("\"width\"") + std::to_string(m_width) +
-                std::string("\"height\"") + std::to_string(m_height) +
+                std::string("\"width\"") + std::to_string(width) +
+                std::string("\"height\"") + std::to_string(height) +
                 std::string("."));
     }
 
-    void ImageData::throwOutOfBoundsException(size_t x, size_t y) const
+    void ImageData::throwOutOfBoundsException(size_t x, size_t y, size_t width, size_t height) const
     {
-        if (x > m_width || y > m_height)
+        if (x > width || y > height)
             throw std::invalid_argument(
                 std::string("[Error] imaginator::ImageData: out of bounds: ") +
-                std::string("width = ") + std::to_string(m_width) +
-                std::string(", height = ") + std::to_string(m_height) +
+                std::string("width = ") + std::to_string(width) +
+                std::string(", height = ") + std::to_string(height) +
                 std::string(", x = ") + std::to_string(x) +
                 std::string(", y = ") + std::to_string(y) +
                 std::string("."));

@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 #include "ImageData.hpp"
 
@@ -30,7 +31,7 @@ namespace imaginator
 
     private:
 
-        std::string m_sourcePath;
+        std::string sourcePath;
     };
 }
 

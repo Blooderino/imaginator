@@ -2,59 +2,65 @@
 
 namespace imaginator
 {
-    ImagePixel::ImagePixel(byte red, byte green, byte blue, std::optional<byte> alpha) :
-        m_red(red),
-        m_green(green),
-        m_blue(blue),
-        m_alpha(alpha)
-    {}
+    ImagePixel::ImagePixel(
+        byte red /* = MAX_CHANNEL_VALUE */, 
+        byte green /* = MAX_CHANNEL_VALUE */, 
+        byte blue /* = MAX_CHANNEL_VALUE*/, 
+        std::optional<byte> alpha /* = std::nullopt */)
+    {
+        this->setRed(red);
+        this->setGreen(green);
+        this->setBlue(blue);
+        this->setAlpha(alpha);
+    }
 
     ImagePixel::ImagePixel(const ImagePixel& imagePixel) :
-        m_red(imagePixel.getRed()),
-        m_green(imagePixel.getGreen()),
-        m_blue(imagePixel.getBlue()),
-        m_alpha(imagePixel.getAlpha())
+        ImagePixel::ImagePixel(
+            imagePixel.getRed(),
+            imagePixel.getGreen(),
+            imagePixel.getBlue(),
+            imagePixel.getAlpha())
     {}
 
     ImagePixel::~ImagePixel() {}
 
     void ImagePixel::setRed(byte red)
     {
-        m_red = red;
+        this->red = red;
     }
 
     byte ImagePixel::getRed() const
     {
-        return m_red;
+        return this->red;
     }
 
     void ImagePixel::setGreen(byte green)
     {
-        m_green = green;
+        this->green = green;
     }
 
     byte ImagePixel::getGreen() const
     {
-        return m_green;
+        return this->green;
     }
 
     void ImagePixel::setBlue(byte blue)
     {
-        m_blue = blue;
+        this->blue = blue;
     }
 
     byte ImagePixel::getBlue() const
     {
-        return m_blue;
+        return this->blue;
     }
 
     void ImagePixel::setAlpha(std::optional<byte> alpha)
     {
-        m_alpha = alpha;
+        this->alpha = alpha;
     }
 
     std::optional<byte> ImagePixel::getAlpha() const
     {
-        return m_alpha;
+        return this->alpha;
     }
 }
