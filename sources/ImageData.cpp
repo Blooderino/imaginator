@@ -12,8 +12,8 @@ namespace imaginator
     {
         throwIncorrectArgumentException(width, height);
 
-        this->width = width;
-        this->height = height;
+        this->setWidth(width);
+        this->setHeight(height);
         this->pixels.resize(width);
         this->pixels.shrink_to_fit();
 
